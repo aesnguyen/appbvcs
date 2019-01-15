@@ -30,6 +30,7 @@ class Homepage extends React.Component {
             dropmenu    : false,
         };
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
+        this._onBackMenu          = this._onBackMenu.bind(this);
       
     }
 
@@ -73,15 +74,20 @@ class Homepage extends React.Component {
         getListCategorySmall(route.id_cat).then(list => {
             this.props.dispatch(setCategory2(list));
         })   
-        this.props.dispatch(redirect(route.id_cat));
+        // this.props.dispatch(redirect(route.id_cat));
         this.props.dispatch(setPageTitle(route.name_cat));
         this.props.dispatch(setCurrentCate(route.id_cat, route.name_cat));
     }
 
     _setView(cate){
+        this.props.dispatch(setPageTitle(cate.name_cat));
         getContentView(cate.id_cat).then(data => {
             this.props.dispatch(setContent(data.content));
         }) 
+    }
+
+    _onBackMenu(){
+        this.props.dispatch(redirect(this.props._route - 1));
     }
     _onSharing(){
 
@@ -94,81 +100,60 @@ class Homepage extends React.Component {
     _renderContentMenu() {
         return (
             <LinearGradient
-                colors={['#9e7b02', '#006763']}
+                colors={['#015d01','#379901']}
                 end={{x: 0.25, y: 0.25}} start={{x: 1.0, y: 1.0}}
                 style={styles.menuDropDownListLayout}>
                 <StatusBar hidden={true} />
                 
                 <View style={styles.menuAvatar}>
-                    <Image style={styles.menuIconAvatar} source={require('./../images/icon.jpg')} />
+                    <Image style={styles.menuIconAvatar} source={require('./../images/icontab.jpg')} />
                     <Text style={styles.menuAvatarText}>TRẬT ĐẢ DỊCH CỐT TRỤ</Text>
                     <Text style={styles.menuAvatarTextSmall}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                 </View>
-                { 
-                    this.props.listCategory1.map((category, index) => {
-                        return(
-                            <View style={styles.menuDropDownList} key={index}>
-                                <TouchableHighlight
-                                    accessibilityLabel={'Tap to open category'}
-                                    style={styles.menuButton}
-                                    onPress={()=>{this._closeControlMenu().then(()=>{
-                                        this._redirect(category);
-                                    })}}
-                                    underlayColor='white'>
-                                    <View style={styles.category}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnText}>{category.name_cat}</Text></View>
-                                </TouchableHighlight>
-                            </View>
-                        )
-                    })
-                }
-                
-                <View style={styles.menuDropDownList}>
-                    <TouchableHighlight
-                        accessibilityLabel={'Tap to share app.'}
-                        style={styles.menuButton}
-                        onPress={()=>{this._closeControlMenu().then(()=>{
-                            this._onSharing();
-                        })}}
-                        underlayColor='white'>
-                        <View style={styles.category}><View style={{width:25}}><Text><FontAwesome name='share-alt' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnText}>Chia sẻ</Text></View>
-                    </TouchableHighlight>
-                </View>
-                <View style={styles.menuDropDownList}>
-                    <TouchableHighlight
-                        accessibilityLabel={'Tap to rate app.'}
-                        style={styles.menuButton}
-                        onPress={()=>{this._closeControlMenu().then(()=>{
-                            this._onRating();
-                        })}}
-                        underlayColor='white'>
-                        <View style={styles.category}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnText}>Đánh giá</Text></View>
-                    </TouchableHighlight>
+                <View style={{height:'60%',backgroundColor: '#fffad8',}}>
+                    { 
+                        this.props.listCategory1.map((category, index) => {
+                            return(
+                                <View style={styles.menuDropDownList} key={index}>
+                                    <TouchableHighlight
+                                        accessibilityLabel={'Tap to open category'}
+                                        style={styles.menuButton}
+                                        onPress={()=>{this._closeControlMenu().then(()=>{
+                                            this._redirect(category);
+                                        })}}
+                                        underlayColor='white'>
+                                        <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>{category.name_cat.toUpperCase()}</Text></View>
+                                    </TouchableHighlight>
+                                </View>
+                            )
+                        })
+                    }
+                    
+                    <View style={styles.menuDropDownList}>
+                        <TouchableHighlight
+                            accessibilityLabel={'Tap to share app.'}
+                            style={styles.menuButton}
+                            onPress={()=>{this._closeControlMenu().then(()=>{
+                                this._onSharing();
+                            })}}
+                            underlayColor='white'>
+                            <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='share-alt' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>CHIA SẺ</Text></View>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={styles.menuDropDownList}>
+                        <TouchableHighlight
+                            accessibilityLabel={'Tap to rate app.'}
+                            style={styles.menuButton}
+                            onPress={()=>{this._closeControlMenu().then(()=>{
+                                this._onRating();
+                            })}}
+                            underlayColor='white'>
+                            <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>ĐÁNH GIÁ</Text></View>
+                        </TouchableHighlight>
+                    </View>
                 </View>
             </LinearGradient>
         )
-    }
-
-    renderMainCategory(){
-        return(
-            <View style={styles.mainCategory}>
-                <Image style={styles.menuIconMain} source={require('./../images/icon.jpg')} />
-                { 
-                    this.props.listCategory1.map((category, index) => {
-                        return(
-                            <View style={styles.menuDropDownListMain} key={index}>
-                                <TouchableHighlight
-                                    accessibilityLabel={'Tap to open list class LS'}
-                                    style={styles.menuButton}
-                                    onPress={()=>{this._redirect(category);}}
-                                    underlayColor='white'>
-                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat}</Text></View>
-                                </TouchableHighlight>
-                            </View>
-                        )
-                    })
-                }
-            </View>
-        );
     }
 
 
@@ -188,36 +173,47 @@ class Homepage extends React.Component {
                 <View style={styles.roomContainerClass}>
                     <Image style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }} source={require('./../images/bgr_main.jpg')} />
                     <View style={styles.headerContainerClass}>
-                        <TouchableHighlight onPress={this._openControlMenu} style={styles.headerContainerMenuDisabled}>
-                            <FontAwesome name='reorder' style={styles.menuHeader} />
-                        </TouchableHighlight>
+                        { this.props._route != 3 &&
+                            <TouchableHighlight onPress={this._openControlMenu} style={styles.headerContainerMenuDisabled}>
+                                <FontAwesome name='reorder' style={styles.menuHeader} />
+                            </TouchableHighlight>
+                        }
+                        { this.props._route == 3 &&
+                            <TouchableHighlight onPress={this._onBackMenu} style={styles.headerContainerMenuDisabled}>
+                                <FontAwesome name='arrow-left' style={styles.backHeader} />
+                            </TouchableHighlight>
+                        }
                         <View style={{
                             justifyContent: 'center',
                             alignItems: 'center',
                             flex: 10,
-                            flexDirection: 'row',
                         }}>
-                            <Text style={styles.titleHeader}>{this.props.pageTitle}</Text>
+                            <Text style={styles.titleHeader}>{this.props.pageTitle.toUpperCase()}</Text>
+                            { this.props._route == 1 &&
+                                <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống làm chủ sinh mệnh</Text>
+                            }
                         </View>
                         <View style={styles.iconUserView}>
-                            <FontAwesome name='search' style={styles.iconSearch} />
+                            { this.props._route == 3 &&
+                                <FontAwesome name='search' style={styles.iconSearch} />
+                            }
                         </View>
                     </View>
                     {
                         this.props._route == 1 &&
-                        <View style={{width:"100%",height:"100%"}}>
-                            <View style={styles.mainCategory}>
-                                <Image style={styles.menuIconMain} source={require('./../images/icon.jpg')} />
+                        <View style={{width:"100%",height:"82%", backgroundColor:"#fffad8"}}>
+                            <View style={styles.mainCategoryView}>
+                                <Image style={styles.menuIconMainView} source={require('./../images/iconmain.jpg')} />
                                 { 
                                     this.props.listCategory1.map((category, index) => {
                                         return(
-                                            <View style={styles.menuDropDownListMain} key={index}>
+                                            <View style={styles.menuDropDownListMainView} key={index}>
                                                 <TouchableHighlight
                                                     accessibilityLabel={'Tap to open list class LS'}
                                                     style={styles.menuButton}
                                                     onPress={()=>{this._redirect(category);}}
                                                     underlayColor='white'>
-                                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat}</Text></View>
+                                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
                                                 </TouchableHighlight>
                                             </View>
                                         )
@@ -228,19 +224,19 @@ class Homepage extends React.Component {
                     }
                     {
                         this.props._route == 2 &&
-                        <View style={{width:"100%",height:"100%"}}>
-                            <View style={styles.mainCategory}>
-                                <Image style={styles.menuIconMain} source={require('./../images/icon.jpg')} />
+                        <View style={{width:"100%",height:"82%", backgroundColor:"#fffad8"}}>
+                            <View style={styles.mainCategoryView}>
+                                <Image style={styles.menuIconMainView} source={require('./../images/iconmain.jpg')} />
                                 { 
                                     this.props.listCategory2.map((category, index) => {
                                         return(
-                                            <View style={styles.menuDropDownListMain} key={index}>
+                                            <View style={styles.menuDropDownListMainView} key={index}>
                                                 <TouchableHighlight
                                                     accessibilityLabel={'Tap to open list class LS'}
                                                     style={styles.menuButton}
                                                     onPress={()=>{this._setView(category);}}
                                                     underlayColor='white'>
-                                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat}</Text></View>
+                                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
                                                 </TouchableHighlight>
                                             </View>
                                         )
@@ -257,8 +253,19 @@ class Homepage extends React.Component {
                             onLoadEnd={() => {
                                 this.setState({loading: false});
                             }}
+                            style={{height: '82%', backgroundColor:'#fffad8'}}
                         />
                     }
+                    <View style={styles.footerContainerClass}>
+                        <View style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'row'
+                        }}>
+                            <Image style={styles.menuIconAvatarFooter} source={require('./../images/iconfooter.jpg')} />
+                            <Text style={this.props._route == 1 ? styles.titleFooter1 :styles.titleFooter}>NHUẬN LỰC: 0986 880 998</Text>
+                        </View>
+                    </View>
                 </View>
             </Drawer>
         );
@@ -269,16 +276,24 @@ class Homepage extends React.Component {
 const styles = StyleSheet.create({
     category:{
         flexDirection: 'row',
-        paddingLeft:10,
         borderRadius:2
+    },
+    categoryTab:{
+        flexDirection: 'row',
+        borderRadius:2,
+        paddingLeft:10
     },
     roomContainerClass: {
         flex: 1
     },
     headerContainerClass: {
-        height: 40,
+        height: '10%',
         flexDirection: 'row',
-        backgroundColor: '#465b6c',
+        elevation: 5
+    },
+    footerContainerClass: {
+        height: '8%',
+        flexDirection: 'row',
         elevation: 5
     },
     menuHeader: {
@@ -288,6 +303,16 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlignVertical: 'center'
     },
+    backHeader:{
+        flex: 1,
+        textAlign: 'center',
+        fontSize: 30,
+        color: '#015d01',
+        textAlign: 'center',
+        textShadowColor:'#fff',
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2,
+    },
     menuDropDownListLayout:{
         flexDirection: 'column',
         flex: 1,
@@ -296,28 +321,25 @@ const styles = StyleSheet.create({
         left: 0,
         bottom: 0,
         right: 0,
-        zIndex: 10000
+        zIndex: 10000,
+        backgroundColor: 'rgba(94, 192, 0, 0.5)',
     },
     menuAvatar:{
-        flex: 4,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
         marginBottom: 3,
-        backgroundColor: 'rgba(52, 52, 52, 0.0)'
+        backgroundColor: 'rgba(94, 192, 0, 0.5)',
     },
-    mainCategory:{
+    mainCategoryView:{
         flex: 3,
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(52, 52, 52, 0.0)'
+        paddingLeft: 20,
+        paddingRight: 20
     },
     menuDropDownList:{
-        flex: 1,
         flexDirection: 'row',
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        justifyContent:'center'  ,
-        marginBottom: 2
+        backgroundColor: '#fffad8',
+        justifyContent:'center',
     },
     menuDropDownListMain : {
         flexDirection: 'row',
@@ -326,33 +348,62 @@ const styles = StyleSheet.create({
         marginBottom: 2,
         height: 50
     },
+    menuDropDownListMainView : {
+        flexDirection: 'row',
+        backgroundColor: '#2d8900',
+        justifyContent:'center',
+        alignItems: 'center',
+        marginBottom: 2,
+        height: 50,
+        borderRadius: 10,
+        marginTop: 2,
+        borderBottomColor: '#ff2d16',
+        borderBottomWidth: 1
+    },
     menuButton:{
         flex: 3,
-        justifyContent:'center'
-    },
-    menuAvatarBtn:{
-        flex: 3
+        justifyContent:'center',
+        height: 50
     },
     menuBtnText:{
         zIndex: 120000,
         color: '#fff',
         width: '100%',
-        paddingLeft: 10,
+        textAlignVertical: 'center',
+        textAlign: 'center',
+    },
+    menuBtnTextTab:{
+        zIndex: 120000,
+        color: '#015d01',
+        width: '100%',
         textAlignVertical: 'center'
     },
     menuAvatarText:{
-        flex:3,
         zIndex: 120000,
-        color: '#ff1a1a',
+        color: '#ff2d16',
         textAlign: 'center',
         fontSize: 25,
+        textShadowColor:'#fff',
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2,
     },
     menuAvatarTextSmall:{
         zIndex: 120000,
-        color: '#fff',
+        color: '#ff2d16',
         textAlign: 'center',
         fontSize: 15,
-        paddingTop: 5
+        paddingTop: 5,
+        textShadowColor:'#fff',
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2,
+    },
+    menuAvatarTextSmallTitle:{
+        color: '#015d01',
+        textAlign: 'center',
+        fontSize: 12,
+        textShadowColor:'#fff',
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2
     },
     menuIconButton:{
         flex: 1,
@@ -363,19 +414,24 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     menuIconAvatar:{
-        flex: 3,
-        alignItems: 'center',
-        justifyContent: 'center',
         marginTop: 20,
-        width: '40%',
-        height: '40%'
+        width: 120,
+        height: 100
+    },
+    menuIconAvatarFooter:{
+        width: '18%',
+        height: '100%',
+        marginRight: 10
     },
     menuIconMain:{
-        alignItems: 'center',
-        justifyContent: 'center',
         marginTop: 20,
-        width: '20%',
-        height: '20%'
+        width: '30%'
+    },
+    menuIconMainView:{
+        width:'35%',
+        height:'20%',
+        marginTop:10,
+        marginBottom: 10
     },
     headerContainerMenuDisabled: {
         flex: 1,
@@ -428,11 +484,28 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     titleHeader: {
-        flex: 6,
-        color: '#fff',
-        fontWeight: '600',
+        color: '#015d01',
         textAlign: 'center',
-        fontSize: 14
+        fontSize: 20,
+        fontWeight: '600',
+        textShadowColor:'#fff',
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2,
+    },
+    titleFooter: {
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: '800',
+        fontSize: 20,
+    },
+    titleFooter1: {
+        color: '#ff2d16',
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '800',
+        textShadowColor:'#fff',
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2,
     },
     statusUser: {
         flex: 1,
