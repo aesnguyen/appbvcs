@@ -247,14 +247,16 @@ class Homepage extends React.Component {
                     }
                     {
                         this.props._route == 3 &&
-                        <WebView
-                            originWhitelist={['*']}
-                            source={{ baseUrl: '', html: this.props.contentView }}
-                            onLoadEnd={() => {
-                                this.setState({loading: false});
-                            }}
-                            style={{height: '82%', backgroundColor:'#fffad8'}}
-                        />
+                        <View style={{height: '82%', backgroundColor:'#fffad8'}}>
+                            <WebView
+                                originWhitelist={['*']}
+                                source={{ baseUrl: '', html: this.props.contentView }}
+                                onLoadEnd={() => {
+                                    this.setState({loading: false});
+                                }}
+                                style={{height: '82%', backgroundColor:'#fffad8', marginLeft:10, marginRight:10}}
+                            />
+                        </View>
                     }
                     <View style={styles.footerContainerClass}>
                         <View style={{
