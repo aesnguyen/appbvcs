@@ -1,7 +1,7 @@
 import React                    from 'react';
 import { connect }              from 'react-redux';
 import { 
-    View, Text, Image, WebView,
+    View, Text, Image, WebView,Linking,SearchBar,Share,
     TouchableHighlight, StyleSheet, StatusBar,BackHandler
 }                               from 'react-native';
 import LinearGradient           from 'react-native-linear-gradient';
@@ -28,10 +28,14 @@ class Homepage extends React.Component {
             loading     : true,
             disable     : false,
             dropmenu    : false,
+            shareStatus : false,
+            searchStatus: false
         };
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._onBackMenu          = this._onBackMenu.bind(this);
-      
+        this._onSharing           = this._onSharing.bind(this);
+        this._onSearchChange      = this._onSearchChange.bind(this);
+        this._onSearch            = this._onSearch.bind(this);
     }
 
     componentWillMount(){
@@ -74,7 +78,6 @@ class Homepage extends React.Component {
         getListCategorySmall(route.id_cat).then(list => {
             this.props.dispatch(setCategory2(list));
         })   
-        // this.props.dispatch(redirect(route.id_cat));
         this.props.dispatch(setPageTitle(route.name_cat));
         this.props.dispatch(setCurrentCate(route.id_cat, route.name_cat));
     }
@@ -90,11 +93,46 @@ class Homepage extends React.Component {
         this.props.dispatch(redirect(this.props._route - 1));
     }
     _onSharing(){
+        // this.setState({shareStatus:true});
+        Share.share({
+            message: 'Trật đả dịch cốt trụ - Làm chủ cột sống làm chủ sinh mệnh!',
+            url: 'https://play.google.com/store/apps/details?id=com.hainn.bvcs',
+            title: 'Ứng dụng tác động cột sống - Trật đả dịch cốt trụ'
+          }, {
+            // Android only:
+            dialogTitle: 'Chia sẻ ứng dụng Bệnh viện cột sống',
+            // iOS only:
+            excludedActivityTypes: [
+              'com.apple.UIKit.activity.PostToTwitter'
+            ]
+          })
+    }
+
+    _onSearchChange(){
 
     }
 
-    _onRating(){
+    _onSearchGo(){
 
+    }
+
+    _onSearchCancel(){
+
+    }
+
+    _onSearch(){
+        this.setState({searchStatus:true});
+    }
+
+    _onRating(){
+        let link = "https://play.google.com/store/apps/details?id=com.hainn.bvcs";
+        Linking.canOpenURL(link).then(supported => {
+            if (!supported) {
+                alert("No apps found on store!");
+            } else {
+                return Linking.openURL(link);
+            }
+        }).catch(err => console.error('An error occurred', err));
     }
     
     _renderContentMenu() {
@@ -110,7 +148,7 @@ class Homepage extends React.Component {
                     <Text style={styles.menuAvatarText}>TRẬT ĐẢ DỊCH CỐT TRỤ</Text>
                     <Text style={styles.menuAvatarTextSmall}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                 </View>
-                <View style={{height:'60%',backgroundColor: '#fffad8',}}>
+                <View style={{height:'65%',backgroundColor: '#fffad8',}}>
                     { 
                         this.props.listCategory1.map((category, index) => {
                             return(
@@ -133,9 +171,9 @@ class Homepage extends React.Component {
                         <TouchableHighlight
                             accessibilityLabel={'Tap to share app.'}
                             style={styles.menuButton}
-                            onPress={()=>{this._closeControlMenu().then(()=>{
-                                this._onSharing();
-                            })}}
+                            onPress={()=>
+                                this._onSharing()
+                            }
                             underlayColor='white'>
                             <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='share-alt' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>CHIA SẺ</Text></View>
                         </TouchableHighlight>
@@ -144,9 +182,9 @@ class Homepage extends React.Component {
                         <TouchableHighlight
                             accessibilityLabel={'Tap to rate app.'}
                             style={styles.menuButton}
-                            onPress={()=>{this._closeControlMenu().then(()=>{
-                                this._onRating();
-                            })}}
+                            onPress={()=>
+                                this._onRating()
+                            }
                             underlayColor='white'>
                             <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>ĐÁNH GIÁ</Text></View>
                         </TouchableHighlight>
@@ -193,9 +231,21 @@ class Homepage extends React.Component {
                                 <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                             }
                         </View>
+                        {
+                            this.state.searchStatus &&
+                            <SearchBar
+                                ref='searchBar'
+                                placeholder='Search'
+                                onChangeText={this._onSearchChange}
+                                onSearchButtonPress={this._onSearchGo}
+                                onCancelButtonPress={this._onSearchCancel}
+                            />
+                        }
                         <View style={styles.iconUserView}>
                             { this.props._route == 3 &&
-                                <FontAwesome name='search' style={styles.iconSearch} />
+                                <TouchableHighlight onPress={this._onSearch} style={styles.headerContainerMenuDisabled}>
+                                    <FontAwesome name='search' style={styles.iconSearch} />
+                                </TouchableHighlight>
                             }
                         </View>
                     </View>
@@ -268,6 +318,12 @@ class Homepage extends React.Component {
                             <Text style={this.props._route == 1 ? styles.titleFooter1 :styles.titleFooter}>NHUẬN LỰC: 0986 880 998</Text>
                         </View>
                     </View>
+                    {/* {
+                        this.state.shareStatus &&
+                        <View style={{height: '82%', backgroundColor:'red'}}>
+                            <TestShare />
+                        </View>
+                    } */}
                 </View>
             </Drawer>
         );
