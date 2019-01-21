@@ -1,12 +1,12 @@
 import React                    from 'react';
 import { connect }              from 'react-redux';
 import { 
-    View, Text, Image, WebView,Linking,SearchBar,Share,
+    View, Text, Image, WebView,Linking,Share,Keyboard,Platform,
     TouchableHighlight, StyleSheet, StatusBar,BackHandler
 }                               from 'react-native';
 import LinearGradient           from 'react-native-linear-gradient';
+import { SearchBar }            from 'react-native-elements';
 import FontAwesome              from 'react-native-vector-icons/FontAwesome';
-import { Icons }                from 'react-native-fontawesome';
 import {
     redirect,
     setCategory1,
@@ -16,7 +16,7 @@ import {
     setContent
 }                               from './../actions/book';
 import {
-    getListCategory,getListCategorySmall, getContentView
+    getListCategory,getListCategorySmall, getContentView, search
 }                               from './../apis/book';
 import Drawer                   from 'react-native-drawer';
 import Orientation              from 'react-native-orientation';
@@ -28,20 +28,25 @@ class Homepage extends React.Component {
             loading     : true,
             disable     : false,
             dropmenu    : false,
-            shareStatus : false,
-            searchStatus: false
+            searchStatus: false,
+            searchContent: '',
+            title:''
         };
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._onBackMenu          = this._onBackMenu.bind(this);
         this._onSharing           = this._onSharing.bind(this);
         this._onSearchChange      = this._onSearchChange.bind(this);
+        this._onSearchCancel      = this._onSearchCancel.bind(this);
         this._onSearch            = this._onSearch.bind(this);
+        this._onSearchGo          = this._onSearchGo.bind(this);
+        this.onBackHome           = this.onBackHome.bind(this);
     }
 
     componentWillMount(){
         getListCategory().then(list => {
             this.props.dispatch(setCategory1(list));
         })
+        this.setState({pageTitle:'TRẬT ĐẢ DỊCH CỐT TRỤ'});
     }
 
     componentDidMount() {
@@ -57,7 +62,22 @@ class Homepage extends React.Component {
     }
 
     _onHardwareBackPress() {
-        return this._backHandler && this.props._route !="HOME" &&  this.props.dispatch(redirect("HOME"));;
+        if (this.props._route != 1){
+            if (!this.state.searchStatus){
+                if (this.props._route == 2){
+                    this.props.dispatch(setPageTitle('TRẬT ĐẢ DỊCH CỐT TRỤ'));
+                } else {
+                    this.props.dispatch(setPageTitle(this.state.pageTitle));
+                }
+                this.props.dispatch(redirect(this.props._route - 1)); 
+                return this._backHandler;
+            } else {
+                this.setState({searchStatus:false});
+            }
+        } else {
+            BackHandler.exitApp();
+        }
+        this.setState({searchStatus:false});
     }
 
     _closeControlMenu = () => {
@@ -79,21 +99,25 @@ class Homepage extends React.Component {
             this.props.dispatch(setCategory2(list));
         })   
         this.props.dispatch(setPageTitle(route.name_cat));
+        this.setState({pageTitle:route.name_cat});
         this.props.dispatch(setCurrentCate(route.id_cat, route.name_cat));
     }
 
     _setView(cate){
-        this.props.dispatch(setPageTitle(cate.name_cat));
-        getContentView(cate.id_cat).then(data => {
+        let title = cate.name_cat?cate.name_cat:cate.title;
+        this.props.dispatch(setPageTitle(title));
+        let id = cate.id_cat? cate.id_cat : cate.id_ca;
+        getContentView(id).then(data => {
+            this.setState({searchStatus:false});
             this.props.dispatch(setContent(data.content));
         }) 
     }
 
     _onBackMenu(){
         this.props.dispatch(redirect(this.props._route - 1));
+        this.props.dispatch(setPageTitle(this.state.pageTitle));
     }
     _onSharing(){
-        // this.setState({shareStatus:true});
         Share.share({
             message: 'Trật đả dịch cốt trụ - Làm chủ cột sống làm chủ sinh mệnh!',
             url: 'https://play.google.com/store/apps/details?id=com.hainn.bvcs',
@@ -108,20 +132,42 @@ class Homepage extends React.Component {
           })
     }
 
-    _onSearchChange(){
-
+    _onSearchChange(value: string){
+        this.setState({ searchContent: value });
     }
 
     _onSearchGo(){
-
+        search(this.state.searchContent).then(list => {
+            let title = "Danh mục chứa: \"" + this.state.searchContent+"\"";
+            this.props.dispatch(setPageTitle(title));
+            this.setState({pageTitle:title});
+            this.props.dispatch(setCategory2(list));
+        })
     }
 
     _onSearchCancel(){
-
+        this.setState({searchStatus:false, searchContent:''});
     }
 
     _onSearch(){
         this.setState({searchStatus:true});
+    }
+
+    onBackHome(){
+        getListCategory().then(list => {
+            this.props.dispatch(setCategory1(list));
+            this._closeControlMenu();
+        })
+    }
+
+    _renderSearchIcon(){
+        return(
+            <View>
+                <TouchableHighlight onPress={this._onSearchGo} style={styles.headerContainerMenuDisabled}>
+                    <FontAwesome name='search' style={styles.iconSearch} />
+                </TouchableHighlight>
+            </View>
+        );
     }
 
     _onRating(){
@@ -144,7 +190,9 @@ class Homepage extends React.Component {
                 <StatusBar hidden={true} />
                 
                 <View style={styles.menuAvatar}>
-                    <Image style={styles.menuIconAvatar} source={require('./../images/icontab.jpg')} />
+                    <TouchableHighlight onPress={() => this.onBackHome()}>
+                        <Image style={styles.menuIconAvatar} source={require('./../images/icontab.jpg')} />
+                    </TouchableHighlight>
                     <Text style={styles.menuAvatarText}>TRẬT ĐẢ DỊCH CỐT TRỤ</Text>
                     <Text style={styles.menuAvatarTextSmall}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                 </View>
@@ -221,24 +269,31 @@ class Homepage extends React.Component {
                                 <FontAwesome name='arrow-left' style={styles.backHeader} />
                             </TouchableHighlight>
                         }
-                        <View style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            flex: 10,
-                        }}>
-                            <Text style={styles.titleHeader}>{this.props.pageTitle.toUpperCase()}</Text>
-                            { this.props._route == 1 &&
-                                <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống làm chủ sinh mệnh</Text>
-                            }
-                        </View>
+                            <View style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                flex: 10,
+                            }}>
+                                <Text style={styles.titleHeader}>{this.state.searchStatus ? this.props.pageTitle :this.props.pageTitle.toUpperCase()}</Text>
+                                { this.props._route == 1 &&
+                                    <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống làm chủ sinh mệnh</Text>
+                                }
+                            </View>
                         {
-                            this.state.searchStatus &&
+                            this.props._route == 3 && this.state.searchStatus &&
                             <SearchBar
-                                ref='searchBar'
-                                placeholder='Search'
+                                ref={ref => this.search = ref}
                                 onChangeText={this._onSearchChange}
-                                onSearchButtonPress={this._onSearchGo}
-                                onCancelButtonPress={this._onSearchCancel}
+                                searchIcon = {this._renderSearchIcon}
+                                onSubmitEditing ={this._onSearchGo}
+                                onCancel = {this._onSearchCancel}
+                                platform={Platform.OS === "ios" ? "ios" : "android"}
+                                lightTheme
+                                clearIcon
+                                placeholder      ='...Tìm kiếm...'
+                                returnKeyType    ='search'
+                                cancelButtonTitle="Cancel"
+                                containerStyle = {{width:'100%',backgroundColor:'#5ec000'}}
                             />
                         }
                         <View style={styles.iconUserView}>
@@ -286,7 +341,7 @@ class Homepage extends React.Component {
                                                     style={styles.menuButton}
                                                     onPress={()=>{this._setView(category);}}
                                                     underlayColor='white'>
-                                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
+                                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat ? category.name_cat.toUpperCase() : category.title.toUpperCase()}</Text></View>
                                                 </TouchableHighlight>
                                             </View>
                                         )
