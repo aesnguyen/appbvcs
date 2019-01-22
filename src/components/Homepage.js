@@ -2,7 +2,7 @@ import React                    from 'react';
 import { connect }              from 'react-redux';
 import { 
     View, Text, Image, WebView,Linking,Share,Keyboard,Platform,
-    TouchableHighlight, StyleSheet, StatusBar,BackHandler
+    TouchableHighlight, StyleSheet, StatusBar,BackHandler,ScrollView
 }                               from 'react-native';
 import LinearGradient           from 'react-native-linear-gradient';
 import { SearchBar }            from 'react-native-elements';
@@ -197,6 +197,7 @@ class Homepage extends React.Component {
                     <Text style={styles.menuAvatarTextSmall}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                 </View>
                 <View style={{height:'65%',backgroundColor: '#fffad8',}}>
+                    <ScrollView style={styles.scrollContainer}>
                     { 
                         this.props.listCategory1.map((category, index) => {
                             return(
@@ -214,7 +215,6 @@ class Homepage extends React.Component {
                             )
                         })
                     }
-                    
                     <View style={styles.menuDropDownList}>
                         <TouchableHighlight
                             accessibilityLabel={'Tap to share app.'}
@@ -237,6 +237,7 @@ class Homepage extends React.Component {
                             <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>ĐÁNH GIÁ</Text></View>
                         </TouchableHighlight>
                     </View>
+                    </ScrollView>
                 </View>
             </LinearGradient>
         )
@@ -309,21 +310,25 @@ class Homepage extends React.Component {
                         <View style={{width:"100%",height:"82%", backgroundColor:"#fffad8"}}>
                             <View style={styles.mainCategoryView}>
                                 <Image style={styles.menuIconMainView} source={require('./../images/iconmain.jpg')} />
-                                { 
-                                    this.props.listCategory1.map((category, index) => {
-                                        return(
-                                            <View style={styles.menuDropDownListMainView} key={index}>
-                                                <TouchableHighlight
-                                                    accessibilityLabel={'Tap to open list class LS'}
-                                                    style={styles.menuButton}
-                                                    onPress={()=>{this._redirect(category);}}
-                                                    underlayColor='white'>
-                                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
-                                                </TouchableHighlight>
-                                            </View>
-                                        )
-                                    })
-                                }
+                                <View style={{height:'70%', width:'100%'}}>
+                                    <ScrollView style={styles.scrollContainer}>
+                                    { 
+                                        this.props.listCategory1.map((category, index) => {
+                                            return(
+                                                <View style={styles.menuDropDownListMainView} key={index}>
+                                                    <TouchableHighlight
+                                                        accessibilityLabel={'Tap to open list class LS'}
+                                                        style={styles.menuButton}
+                                                        onPress={()=>{this._redirect(category);}}
+                                                        underlayColor='white'>
+                                                        <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
+                                                    </TouchableHighlight>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    </ScrollView>
+                                </View>    
                             </View>
                         </View>
                     }
@@ -332,21 +337,25 @@ class Homepage extends React.Component {
                         <View style={{width:"100%",height:"82%", backgroundColor:"#fffad8"}}>
                             <View style={styles.mainCategoryView}>
                                 <Image style={styles.menuIconMainView} source={require('./../images/iconmain.jpg')} />
-                                { 
-                                    this.props.listCategory2.map((category, index) => {
-                                        return(
-                                            <View style={styles.menuDropDownListMainView} key={index}>
-                                                <TouchableHighlight
-                                                    accessibilityLabel={'Tap to open list class LS'}
-                                                    style={styles.menuButton}
-                                                    onPress={()=>{this._setView(category);}}
-                                                    underlayColor='white'>
-                                                    <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat ? category.name_cat.toUpperCase() : category.title.toUpperCase()}</Text></View>
-                                                </TouchableHighlight>
-                                            </View>
-                                        )
-                                    })
-                                }
+                                <View style={{height:'70%', width:'100%'}}>
+                                    <ScrollView style={styles.scrollContainer}>
+                                    { 
+                                        this.props.listCategory2.map((category, index) => {
+                                            return(
+                                                <View style={styles.menuDropDownListMainView} key={index}>
+                                                    <TouchableHighlight
+                                                        accessibilityLabel={'Tap to open list class LS'}
+                                                        style={styles.menuButton}
+                                                        onPress={()=>{this._setView(category);}}
+                                                        underlayColor='white'>
+                                                        <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat ? category.name_cat.toUpperCase() : category.title.toUpperCase()}</Text></View>
+                                                    </TouchableHighlight>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    </ScrollView>
+                                </View>
                             </View>
                         </View>
                     }
@@ -373,12 +382,6 @@ class Homepage extends React.Component {
                             <Text style={this.props._route == 1 ? styles.titleFooter1 :styles.titleFooter}>NHUẬN LỰC: 0986 880 998</Text>
                         </View>
                     </View>
-                    {/* {
-                        this.state.shareStatus &&
-                        <View style={{height: '82%', backgroundColor:'red'}}>
-                            <TestShare />
-                        </View>
-                    } */}
                 </View>
             </Drawer>
         );
@@ -387,6 +390,9 @@ class Homepage extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    scrollContainer:{
+        width:'100%'
+    },
     category:{
         flexDirection: 'row',
         borderRadius:2
@@ -541,7 +547,7 @@ const styles = StyleSheet.create({
         width: '30%'
     },
     menuIconMainView:{
-        width:'35%',
+        width:'40%',
         height:'20%',
         marginTop:10,
         marginBottom: 10
