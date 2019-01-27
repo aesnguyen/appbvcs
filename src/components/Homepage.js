@@ -1,12 +1,13 @@
 import React                    from 'react';
 import { connect }              from 'react-redux';
 import { 
-    View, Text, Image, WebView,Linking,Share,Keyboard,Platform,
-    TouchableHighlight, StyleSheet, StatusBar,BackHandler,ScrollView
+    View, Text, Image, WebView,Linking,Share,Keyboard,Platform,Dimensions,Alert,TouchableOpacity,
+    TouchableHighlight, StyleSheet, StatusBar,BackHandler,ScrollView, ImageBackground
 }                               from 'react-native';
 import LinearGradient           from 'react-native-linear-gradient';
 import { SearchBar }            from 'react-native-elements';
 import FontAwesome              from 'react-native-vector-icons/FontAwesome';
+import AntIcon                  from "react-native-vector-icons/AntDesign";
 import {
     redirect,
     setCategory1,
@@ -20,6 +21,8 @@ import {
 }                               from './../apis/book';
 import Drawer                   from 'react-native-drawer';
 import Orientation              from 'react-native-orientation';
+import SearchInput, { createFilter } from 'react-native-search-filter';
+const deviceWidth = Dimensions.get('window').width
 
 class Homepage extends React.Component {
     constructor(props) {
@@ -30,7 +33,10 @@ class Homepage extends React.Component {
             dropmenu    : false,
             searchStatus: false,
             searchContent: '',
-            title:''
+            searchResults: [],
+            title:'',
+            subView:false,
+            subViewContent: {}
         };
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._onBackMenu          = this._onBackMenu.bind(this);
@@ -38,8 +44,9 @@ class Homepage extends React.Component {
         this._onSearchChange      = this._onSearchChange.bind(this);
         this._onSearchCancel      = this._onSearchCancel.bind(this);
         this._onSearch            = this._onSearch.bind(this);
-        this._onSearchGo          = this._onSearchGo.bind(this);
-        this.onBackHome           = this.onBackHome.bind(this);
+        this._setViewSearch       = this._setViewSearch.bind(this);
+        this.onBackHome           = this.onBackHome.bind(this); 
+        this._setSubView          = this._setSubView.bind(this);
     }
 
     componentWillMount(){
@@ -101,6 +108,7 @@ class Homepage extends React.Component {
         this.props.dispatch(setPageTitle(route.name_cat));
         this.setState({pageTitle:route.name_cat});
         this.props.dispatch(setCurrentCate(route.id_cat, route.name_cat));
+        this.setState({searchStatus:false});
     }
 
     _setView(cate){
@@ -108,9 +116,32 @@ class Homepage extends React.Component {
         this.props.dispatch(setPageTitle(title));
         let id = cate.id_cat? cate.id_cat : cate.id_ca;
         getContentView(id).then(data => {
-            this.setState({searchStatus:false});
-            this.props.dispatch(setContent(data.content));
+            if (data.content != null &&data.content != ''){
+                this.setState({searchStatus:false});
+                this.props.dispatch(setContent(data.content));
+            } else {
+                Alert.alert('Thông báo',"Nội dung đang trong quá trình cập nhật..");
+            }
         }) 
+    }
+
+    _setViewSearch(cate){
+        this.props.dispatch(setPageTitle(cate.post_title));
+        let id = cate.id_cat? cate.id_cat : cate.id_ca;
+        getContentView(id).then(data => {
+            if (data.content != null &&data.content != ''){
+                this.setState({searchStatus:false});
+                this.props.dispatch(setContent(data.content));
+            } else {
+                Alert.alert('Thông báo',"Nội dung đang trong quá trình cập nhật..");
+            }
+        })
+    }
+
+    _setSubView(cate){
+        console.log("hainn--_setSubView--",cate);
+        this.setState({subView:true, subViewContent:cate});
+        this.props.dispatch(redirect(3));
     }
 
     _onBackMenu(){
@@ -134,14 +165,8 @@ class Homepage extends React.Component {
 
     _onSearchChange(value: string){
         this.setState({ searchContent: value });
-    }
-
-    _onSearchGo(){
-        search(this.state.searchContent).then(list => {
-            let title = "Danh mục chứa: \"" + this.state.searchContent+"\"";
-            this.props.dispatch(setPageTitle(title));
-            this.setState({pageTitle:title});
-            this.props.dispatch(setCategory2(list));
+        search(value).then(list => {
+            this.setState({searchResults:list})
         })
     }
 
@@ -150,7 +175,11 @@ class Homepage extends React.Component {
     }
 
     _onSearch(){
-        this.setState({searchStatus:true});
+        if(!this.state.searchStatus){
+            this.setState({searchStatus:true});
+        } else {
+            this.setState({searchStatus:false});
+        }
     }
 
     onBackHome(){
@@ -245,6 +274,7 @@ class Homepage extends React.Component {
 
 
     render() {
+        console.log("hainn--search--",deviceWidth);
         return (
             <Drawer
                 ref={(ref) => this._drawer = ref}
@@ -258,8 +288,14 @@ class Homepage extends React.Component {
                 onOpen={()=>{this.setState({dropmenu:true})}}
             >
                 <View style={styles.roomContainerClass}>
-                    <Image style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }} source={require('./../images/bgr_main.jpg')} />
+                    <Image style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }} source={require('./../images/bggreen.jpg')} />
                     <View style={styles.headerContainerClass}>
+                        {/* <ImageBackground
+                            resizeMode={'stretch'} // or cover
+                            style={{flex: 1}} // must be passed from the parent, the number may vary depending upon your screen size
+                            source={require('./../images/background.jpg')}
+                            > */}
+                        {/* <Image source={require('./../images/background.jpg')} style={styles.backgroundImage} /> */}
                         { this.props._route != 3 &&
                             <TouchableHighlight onPress={this._openControlMenu} style={styles.headerContainerMenuDisabled}>
                                 <FontAwesome name='reorder' style={styles.menuHeader} />
@@ -267,7 +303,7 @@ class Homepage extends React.Component {
                         }
                         { this.props._route == 3 &&
                             <TouchableHighlight onPress={this._onBackMenu} style={styles.headerContainerMenuDisabled}>
-                                <FontAwesome name='arrow-left' style={styles.backHeader} />
+                                <AntIcon name='arrowleft' style={styles.backHeader} />
                             </TouchableHighlight>
                         }
                             <View style={{
@@ -280,37 +316,21 @@ class Homepage extends React.Component {
                                     <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                                 }
                             </View>
-                        {
-                            this.props._route == 3 && this.state.searchStatus &&
-                            <SearchBar
-                                ref={ref => this.search = ref}
-                                onChangeText={this._onSearchChange}
-                                searchIcon = {this._renderSearchIcon}
-                                onSubmitEditing ={this._onSearchGo}
-                                onCancel = {this._onSearchCancel}
-                                platform={Platform.OS === "ios" ? "ios" : "android"}
-                                lightTheme
-                                clearIcon
-                                placeholder      ='...Tìm kiếm...'
-                                returnKeyType    ='search'
-                                cancelButtonTitle="Cancel"
-                                containerStyle = {{width:'100%',backgroundColor:'#5ec000'}}
-                            />
-                        }
                         <View style={styles.iconUserView}>
-                            { this.props._route == 3 &&
+                            { this.props._route != 1 &&
                                 <TouchableHighlight onPress={this._onSearch} style={styles.headerContainerMenuDisabled}>
-                                    <FontAwesome name='search' style={styles.iconSearch} />
+                                    <AntIcon name='search1' style={styles.iconSearch} />
                                 </TouchableHighlight>
                             }
                         </View>
+                        {/* </ImageBackground> */}
                     </View>
                     {
                         this.props._route == 1 &&
                         <View style={{width:"100%",height:"82%", backgroundColor:"#fffad8"}}>
                             <View style={styles.mainCategoryView}>
                                 <Image style={styles.menuIconMainView} source={require('./../images/iconmain.jpg')} />
-                                <View style={{height:'70%', width:'100%'}}>
+                                <View style={{height:'68%', width:'100%'}}>
                                     <ScrollView style={styles.scrollContainer}>
                                     { 
                                         this.props.listCategory1.map((category, index) => {
@@ -332,8 +352,29 @@ class Homepage extends React.Component {
                             </View>
                         </View>
                     }
+                    { this.state.searchStatus &&
+                        <View style={styles.containerSearch}>
+                            <SearchInput 
+                            onChangeText={(term) => { this._onSearchChange(term) }} 
+                            style={styles.searchInput}
+                            placeholder="Nhập vào nội dung tìm kiếm"
+                            />
+                            <ScrollView>
+                            {this.state.searchResults.map((email,index) => {
+                                return (
+                                <TouchableOpacity onPress={()=>this._setViewSearch(email)} key={index} style={styles.emailItem}>
+                                    <View>
+                                    <Text>{email.name_cat}</Text>
+                                    <Text style={styles.emailSubject}>{email.post_title}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                )
+                            })}
+                            </ScrollView>
+                        </View>
+                    }
                     {
-                        this.props._route == 2 &&
+                        this.props._route == 2 && !this.state.searchStatus &&
                         <View style={{width:"100%",height:"82%", backgroundColor:"#fffad8"}}>
                             <View style={styles.mainCategoryView}>
                                 <Image style={styles.menuIconMainView} source={require('./../images/iconmain.jpg')} />
@@ -341,17 +382,31 @@ class Homepage extends React.Component {
                                     <ScrollView style={styles.scrollContainer}>
                                     { 
                                         this.props.listCategory2.map((category, index) => {
-                                            return(
-                                                <View style={styles.menuDropDownListMainView} key={index}>
-                                                    <TouchableHighlight
-                                                        accessibilityLabel={'Tap to open list class LS'}
-                                                        style={styles.menuButton}
-                                                        onPress={()=>{this._setView(category);}}
-                                                        underlayColor='white'>
-                                                        <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat ? category.name_cat.toUpperCase() : category.title.toUpperCase()}</Text></View>
-                                                    </TouchableHighlight>
-                                                </View>
-                                            )
+                                            if (category.child.length == 0){
+                                                return(
+                                                    <View style={styles.menuDropDownListMainView} key={index}>
+                                                        <TouchableHighlight
+                                                            accessibilityLabel={'Tap to open list class LS'}
+                                                            style={styles.menuButton}
+                                                            onPress={()=>{this._setView(category);}}
+                                                            underlayColor='white'>
+                                                            <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat ? category.name_cat.toUpperCase() : category.title.toUpperCase()}</Text></View>
+                                                        </TouchableHighlight>
+                                                    </View>
+                                                )
+                                            } else {
+                                                return(
+                                                    <View style={styles.menuDropDownListMainView} key={index}>
+                                                        <TouchableHighlight
+                                                            accessibilityLabel={'Tap to open list class LS'}
+                                                            style={styles.menuButton}
+                                                            onPress={()=>{this._setSubView(category.child);}}
+                                                            underlayColor='white'>
+                                                            <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat ? category.name_cat.toUpperCase() : category.title.toUpperCase()}</Text></View>
+                                                        </TouchableHighlight>
+                                                    </View>
+                                                )
+                                            }
                                         })
                                     }
                                     </ScrollView>
@@ -360,16 +415,45 @@ class Homepage extends React.Component {
                         </View>
                     }
                     {
-                        this.props._route == 3 &&
+                        this.props._route == 3 && !this.state.subView &&  !this.state.searchStatus &&
                         <View style={{height: '82%', backgroundColor:'#fffad8'}}>
                             <WebView
                                 originWhitelist={['*']}
                                 source={{ baseUrl: '', html: this.props.contentView }}
+                                injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=0.5, maximum-scale=0.5, user-scalable=2.0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
+                                scalesPageToFit={true}
                                 onLoadEnd={() => {
                                     this.setState({loading: false});
                                 }}
-                                style={{height: '82%', backgroundColor:'#fffad8', marginLeft:10, marginRight:10}}
+                                style={{height: '82%', backgroundColor:'#fffad8', marginLeft:10, marginRight:10, flex: 1}}
                             />
+                        </View>
+                    }
+                    {
+                        this.props._route == 3 && this.state.subView &&  !this.state.searchStatus &&
+                        <View style={{width:"100%",height:"82%", backgroundColor:"#fffad8"}}>
+                            <View style={styles.mainCategoryView}>
+                                <Image style={styles.menuIconMainView} source={require('./../images/iconmain.jpg')} />
+                                <View style={{height:'70%', width:'100%'}}>
+                                    <ScrollView style={styles.scrollContainer}>
+                                    { 
+                                        this.state.subViewContent.map((category, index) => {
+                                            return(
+                                                <View style={styles.menuDropDownListMainView} key={index}>
+                                                    <TouchableHighlight
+                                                        accessibilityLabel={'Tap to open list class LS'}
+                                                        style={styles.menuButton}
+                                                        onPress={()=>{this._setView(category);}}
+                                                        underlayColor='white'>
+                                                        <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
+                                                    </TouchableHighlight>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    </ScrollView>
+                                </View>    
+                            </View>
                         </View>
                     }
                     <View style={styles.footerContainerClass}>
@@ -390,8 +474,33 @@ class Homepage extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    containerSearch: {
+        flex: 1,
+        backgroundColor: '#fffad8',
+        justifyContent: 'flex-start',
+        zIndex:999999
+    },
+    emailItem:{
+        borderBottomWidth: 0.5,
+        borderColor: 'rgba(0,0,0,0.3)',
+        padding: 10
+    },
+    emailSubject: {
+        color: 'rgba(0,0,0,0.5)'
+    },
+    searchInput:{
+        padding: 10,
+        borderColor: '#CCC',
+        borderWidth: 1,
+        backgroundColor:'#fffad8',
+        zIndex:999999
+    },
     scrollContainer:{
         width:'100%'
+    },
+    backgroundImage:{
+        flex: 1,
+        resizeMode: 'cover'
     },
     category:{
         flexDirection: 'row',
@@ -418,19 +527,19 @@ const styles = StyleSheet.create({
     menuHeader: {
         flex: 1,
         textAlign: 'center',
-        fontSize: 35,
+        fontSize: 0.08*deviceWidth,
         color: '#fff',
         textAlignVertical: 'center'
     },
     backHeader:{
         flex: 1,
         textAlign: 'center',
-        fontSize: 30,
+        fontSize: 0.08*deviceWidth,
         color: '#015d01',
         textAlign: 'center',
         textShadowColor:'#fff',
-        textShadowOffset:{width: 1, height: 1},
-        textShadowRadius:2,
+        textShadowOffset:{width: 2, height: 2},
+        textShadowRadius:3,
     },
     menuDropDownListLayout:{
         flexDirection: 'column',
@@ -444,10 +553,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(94, 192, 0, 0.5)',
     },
     menuAvatar:{
-        flexDirection: 'column',
         alignItems: 'center',
         marginBottom: 3,
         backgroundColor: 'rgba(94, 192, 0, 0.5)',
+        height: '25%'
     },
     mainCategoryView:{
         flex: 3,
@@ -490,6 +599,7 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlignVertical: 'center',
         textAlign: 'center',
+        fontSize: 0.05*deviceWidth
     },
     menuBtnTextTab:{
         zIndex: 120000,
@@ -501,17 +611,16 @@ const styles = StyleSheet.create({
         zIndex: 120000,
         color: '#ff2d16',
         textAlign: 'center',
-        fontSize: 25,
+        fontSize: 0.06*deviceWidth,
         textShadowColor:'#fff',
-        textShadowOffset:{width: 1, height: 1},
-        textShadowRadius:2,
+        textShadowOffset:{width: 2, height: 2},
+        textShadowRadius:3,
     },
     menuAvatarTextSmall:{
         zIndex: 120000,
         color: '#ff2d16',
         textAlign: 'center',
-        fontSize: 15,
-        paddingTop: 5,
+        fontSize: 0.035*deviceWidth,
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2,
@@ -519,7 +628,7 @@ const styles = StyleSheet.create({
     menuAvatarTextSmallTitle:{
         color: '#015d01',
         textAlign: 'center',
-        fontSize: 12,
+        fontSize: 0.035*deviceWidth,
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2
@@ -533,14 +642,15 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     menuIconAvatar:{
-        marginTop: 20,
-        width: 120,
-        height: 100
+        marginTop:2,
+        width: 0.32*deviceWidth,
+        height: 97
     },
     menuIconAvatarFooter:{
         width: '18%',
         height: '100%',
-        marginRight: 10
+        marginRight: 0.05*deviceWidth,
+        marginLeft: 0
     },
     menuIconMain:{
         marginTop: 20,
@@ -548,7 +658,7 @@ const styles = StyleSheet.create({
     },
     menuIconMainView:{
         width:'40%',
-        height:'20%',
+        height:'25%',
         marginTop:10,
         marginBottom: 10
     },
@@ -605,48 +715,33 @@ const styles = StyleSheet.create({
     titleHeader: {
         color: '#015d01',
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: 0.06*deviceWidth,
         fontWeight: '600',
         textShadowColor:'#fff',
-        textShadowOffset:{width: 1, height: 1},
-        textShadowRadius:2,
+        textShadowOffset:{width: 2, height: 2},
+        textShadowRadius:3,
     },
     titleFooter: {
         color: '#fff',
         textAlign: 'center',
         fontWeight: '800',
-        fontSize: 20,
+        fontSize: 0.05*deviceWidth,
     },
     titleFooter1: {
         color: '#ff2d16',
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: 0.05*deviceWidth,
         fontWeight: '800',
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2,
     },
-    statusUser: {
-        flex: 1,
-        fontSize: 10,
-        color: '#36ff4e',
-        padding: 0,
-        marginBottom: 5,
-        textAlignVertical: 'center',
-        textAlign: 'right'
-    },
     iconSearch: {
         flex: 1,
         color: '#fff',
         textAlignVertical: 'center',
-        fontSize: 30,
+        fontSize: 0.06*deviceWidth,
         textAlign: 'right'
-    },
-    styleMenuLanguage:{
-        position:'absolute',
-        right:0,
-        top:0,
-        backgroundColor:'red'
     }
 });
 
