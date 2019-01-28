@@ -15,7 +15,7 @@ export function getBooks(){
 
 export function getListCategory(){
     return new Promise(function(resolve,reject){
-        fetch("http://bvxk.vatphamtamlinh.net/api/category_parrent.php", {
+        fetch("http://benhvienxuongkhop.vn/api/category_parrent.php", {
             method: "GET",
             headers: {
                 "Content-Type": "text/plain"
@@ -30,7 +30,7 @@ export function getListCategory(){
 
 export function getListCategorySmall(id){
     return new Promise(function(resolve,reject){
-        fetch("http://bvxk.vatphamtamlinh.net/api/category_child.php?term_id="+id, {
+        fetch("http://benhvienxuongkhop.vn/api/category_child.php?term_id="+id, {
             method: "GET",
             headers: {
                 "Content-Type": "text/plain"
@@ -45,7 +45,7 @@ export function getListCategorySmall(id){
 
 export function getContentView(id){
     return new Promise(function(resolve,reject){
-        fetch("http://bvxk.vatphamtamlinh.net/api/content.php?term_id="+id, {
+        fetch("http://benhvienxuongkhop.vn/api/content.php?term_id="+id, {
             method: "GET",
             headers: {
                 "Content-Type": "text/plain"

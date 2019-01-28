@@ -2,10 +2,9 @@ import React                    from 'react';
 import { connect }              from 'react-redux';
 import { 
     View, Text, Image, WebView,Linking,Share,Keyboard,Platform,Dimensions,Alert,TouchableOpacity,
-    TouchableHighlight, StyleSheet, StatusBar,BackHandler,ScrollView, ImageBackground
+    TouchableHighlight, StyleSheet, StatusBar,BackHandler,ScrollView, ImageBackground, NetInfo
 }                               from 'react-native';
 import LinearGradient           from 'react-native-linear-gradient';
-import { SearchBar }            from 'react-native-elements';
 import FontAwesome              from 'react-native-vector-icons/FontAwesome';
 import AntIcon                  from "react-native-vector-icons/AntDesign";
 import {
@@ -50,13 +49,28 @@ class Homepage extends React.Component {
     }
 
     componentWillMount(){
+        this.handleConnectivityChange.bind(this);        
+        NetInfo.isConnected.removeEventListener(
+            "connectionChange",
+            this.handleConnectivityChange
+        );
         getListCategory().then(list => {
             this.props.dispatch(setCategory1(list));
         })
         this.setState({pageTitle:'TRẬT ĐẢ DỊCH CỐT TRỤ'});
     }
 
+    handleConnectivityChange(connectionInfo) {
+        if(connectionInfo.type == "none" || connectionInfo.type == "unknown"){
+            Alert.alert('Thông báo','Đã mất kết nối mạng. Vui lòng kết nối lại để có đầy đủ nội dung ứng dụng!');
+        }   
+    }
+
     componentDidMount() {
+        NetInfo.isConnected.addEventListener(
+            "connectionChange",
+            this.handleConnectivityChange
+        );
         Orientation.lockToPortrait();
         const backHandler = BackHandler || BackAndroid;
 
@@ -118,6 +132,7 @@ class Homepage extends React.Component {
         getContentView(id).then(data => {
             if (data.content != null &&data.content != ''){
                 this.setState({searchStatus:false});
+                // let contentfix = data.content.replace(/<p/g,'<p ');
                 this.props.dispatch(setContent(data.content));
             } else {
                 Alert.alert('Thông báo',"Nội dung đang trong quá trình cập nhật..");
@@ -139,7 +154,6 @@ class Homepage extends React.Component {
     }
 
     _setSubView(cate){
-        console.log("hainn--_setSubView--",cate);
         this.setState({subView:true, subViewContent:cate});
         this.props.dispatch(redirect(3));
     }
@@ -185,6 +199,7 @@ class Homepage extends React.Component {
     onBackHome(){
         getListCategory().then(list => {
             this.props.dispatch(setCategory1(list));
+            this.props.dispatch(setPageTitle('TRẬT ĐẢ DỊCH CỐT TRỤ'));
             this._closeControlMenu();
         })
     }
@@ -200,7 +215,7 @@ class Homepage extends React.Component {
     }
 
     _onRating(){
-        let link = "https://play.google.com/store/apps/details?id=com.hainn.bvcs";
+        let link = "https://play.google.com/store/apps/details?id=com.hainn.bvxk";
         Linking.canOpenURL(link).then(supported => {
             if (!supported) {
                 alert("No apps found on store!");
@@ -225,7 +240,7 @@ class Homepage extends React.Component {
                     <Text style={styles.menuAvatarText}>TRẬT ĐẢ DỊCH CỐT TRỤ</Text>
                     <Text style={styles.menuAvatarTextSmall}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                 </View>
-                <View style={{height:'65%',backgroundColor: '#fffad8',}}>
+                <View style={{height:'62%',backgroundColor: '#fffad8',}}>
                     <ScrollView style={styles.scrollContainer}>
                     { 
                         this.props.listCategory1.map((category, index) => {
@@ -274,7 +289,6 @@ class Homepage extends React.Component {
 
 
     render() {
-        console.log("hainn--search--",deviceWidth);
         return (
             <Drawer
                 ref={(ref) => this._drawer = ref}
@@ -364,8 +378,8 @@ class Homepage extends React.Component {
                                 return (
                                 <TouchableOpacity onPress={()=>this._setViewSearch(email)} key={index} style={styles.emailItem}>
                                     <View>
-                                    <Text>{email.name_cat}</Text>
                                     <Text style={styles.emailSubject}>{email.post_title}</Text>
+                                    <Text style={styles.emailSubject2}>{email.name_cat}</Text>
                                     </View>
                                 </TouchableOpacity>
                                 )
@@ -420,7 +434,7 @@ class Homepage extends React.Component {
                             <WebView
                                 originWhitelist={['*']}
                                 source={{ baseUrl: '', html: this.props.contentView }}
-                                injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=0.5, maximum-scale=0.5, user-scalable=2.0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
+                                injectedJavaScript={`const img = document.getElementsByTagName('p'); img.setAttribute('text-align: justify;'); `}
                                 scalesPageToFit={true}
                                 onLoadEnd={() => {
                                     this.setState({loading: false});
@@ -486,7 +500,13 @@ const styles = StyleSheet.create({
         padding: 10
     },
     emailSubject: {
-        color: 'rgba(0,0,0,0.5)'
+        color: 'rgba(0,0,0,0.5)',
+        fontSize: 0.05*deviceWidth,
+        fontWeight: 'bold'
+    },
+    emailSubject2: {
+        color: 'rgba(0,0,0,0.5)',
+        fontSize: 0.04*deviceWidth
     },
     searchInput:{
         padding: 10,
@@ -527,19 +547,19 @@ const styles = StyleSheet.create({
     menuHeader: {
         flex: 1,
         textAlign: 'center',
-        fontSize: 0.08*deviceWidth,
+        fontSize: 0.06*deviceWidth,
         color: '#fff',
         textAlignVertical: 'center'
     },
     backHeader:{
         flex: 1,
         textAlign: 'center',
-        fontSize: 0.08*deviceWidth,
-        color: '#015d01',
+        fontSize: 0.06*deviceWidth,
+        color: '#fff',
         textAlign: 'center',
-        textShadowColor:'#fff',
-        textShadowOffset:{width: 2, height: 2},
-        textShadowRadius:3,
+        textShadowColor:'#015d01',
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2,
     },
     menuDropDownListLayout:{
         flexDirection: 'column',
@@ -556,7 +576,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 3,
         backgroundColor: 'rgba(94, 192, 0, 0.5)',
-        height: '25%'
+        height: '28%'
     },
     mainCategoryView:{
         flex: 3,
@@ -613,8 +633,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 0.06*deviceWidth,
         textShadowColor:'#fff',
-        textShadowOffset:{width: 2, height: 2},
-        textShadowRadius:3,
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2,
     },
     menuAvatarTextSmall:{
         zIndex: 120000,
@@ -628,7 +648,7 @@ const styles = StyleSheet.create({
     menuAvatarTextSmallTitle:{
         color: '#015d01',
         textAlign: 'center',
-        fontSize: 0.035*deviceWidth,
+        fontSize: 0.03*deviceWidth,
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2
@@ -642,9 +662,9 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     menuIconAvatar:{
-        marginTop:2,
+        marginTop:5,
         width: 0.32*deviceWidth,
-        height: 97
+        height: 0.26*deviceWidth
     },
     menuIconAvatarFooter:{
         width: '18%',
@@ -657,8 +677,8 @@ const styles = StyleSheet.create({
         width: '30%'
     },
     menuIconMainView:{
-        width:'40%',
-        height:'25%',
+        width:'38%',
+        height:'23%',
         marginTop:10,
         marginBottom: 10
     },
@@ -715,23 +735,23 @@ const styles = StyleSheet.create({
     titleHeader: {
         color: '#015d01',
         textAlign: 'center',
-        fontSize: 0.06*deviceWidth,
+        fontSize: 0.055*deviceWidth,
         fontWeight: '600',
         textShadowColor:'#fff',
-        textShadowOffset:{width: 2, height: 2},
-        textShadowRadius:3,
+        textShadowOffset:{width: 1, height: 1},
+        textShadowRadius:2,
     },
     titleFooter: {
         color: '#fff',
         textAlign: 'center',
-        fontWeight: '800',
+        fontWeight: 'bold',
         fontSize: 0.05*deviceWidth,
     },
     titleFooter1: {
         color: '#ff2d16',
         textAlign: 'center',
         fontSize: 0.05*deviceWidth,
-        fontWeight: '800',
+        fontWeight: 'bold',
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2,
