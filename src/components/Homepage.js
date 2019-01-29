@@ -98,7 +98,7 @@ class Homepage extends React.Component {
         } else {
             BackHandler.exitApp();
         }
-        this.setState({searchStatus:false});
+        this.setState({searchStatus:false, subView:false});
     }
 
     _closeControlMenu = () => {
@@ -116,6 +116,8 @@ class Homepage extends React.Component {
     };
 
     _redirect(route){
+        console.log("hainn_redirect--",route);
+        this.setState({subView:false});
         getListCategorySmall(route.id_cat).then(list => {
             this.props.dispatch(setCategory2(list));
         })   
@@ -126,10 +128,12 @@ class Homepage extends React.Component {
     }
 
     _setView(cate){
+        console.log("hainn-_setView-",cate);
         let title = cate.name_cat?cate.name_cat:cate.title;
         this.props.dispatch(setPageTitle(title));
         let id = cate.id_cat? cate.id_cat : cate.id_ca;
         getContentView(id).then(data => {
+            console.log("hainn--",data);
             if (data.content != null &&data.content != ''){
                 this.setState({searchStatus:false});
                 // let contentfix = data.content.replace(/<p/g,'<p ');
@@ -154,11 +158,13 @@ class Homepage extends React.Component {
     }
 
     _setSubView(cate){
+        console.log("hainn-_setSubView-",cate);
         this.setState({subView:true, subViewContent:cate});
         this.props.dispatch(redirect(3));
     }
 
     _onBackMenu(){
+        this.setState({subView:false});
         this.props.dispatch(redirect(this.props._route - 1));
         this.props.dispatch(setPageTitle(this.state.pageTitle));
     }
@@ -197,6 +203,7 @@ class Homepage extends React.Component {
     }
 
     onBackHome(){
+        this.setState({subView:false});
         getListCategory().then(list => {
             this.props.dispatch(setCategory1(list));
             this.props.dispatch(setPageTitle('TRẬT ĐẢ DỊCH CỐT TRỤ'));
