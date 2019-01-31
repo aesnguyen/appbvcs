@@ -21,7 +21,8 @@ import {
 import Drawer                   from 'react-native-drawer';
 import Orientation              from 'react-native-orientation';
 import SearchInput, { createFilter } from 'react-native-search-filter';
-const deviceWidth = Dimensions.get('window').width
+const deviceWidth = Dimensions.get('window').width;
+const deviceHeight = Dimensions.get('window').height;
 
 class Homepage extends React.Component {
     constructor(props) {
@@ -83,22 +84,26 @@ class Homepage extends React.Component {
     }
 
     _onHardwareBackPress() {
-        if (this.props._route != 1){
-            if (!this.state.searchStatus){
-                if (this.props._route == 2){
-                    this.props.dispatch(setPageTitle('TRẬT ĐẢ DỊCH CỐT TRỤ'));
-                } else {
-                    this.props.dispatch(setPageTitle(this.state.pageTitle));
-                }
-                this.props.dispatch(redirect(this.props._route - 1)); 
-                return this._backHandler;
-            } else {
-                this.setState({searchStatus:false});
-            }
+        if (this.props.pageTitle == "Liên Hệ Đào Tạo"){
+            this.onBackHome();
         } else {
-            BackHandler.exitApp();
+            if (this.props._route != 1){
+                if (!this.state.searchStatus){
+                    if (this.props._route == 2){
+                        this.props.dispatch(setPageTitle('TRẬT ĐẢ DỊCH CỐT TRỤ'));
+                    } else {
+                        this.props.dispatch(setPageTitle(this.state.pageTitle));
+                    }
+                    this.props.dispatch(redirect(this.props._route - 1)); 
+                    return this._backHandler;
+                } else {
+                    this.setState({searchStatus:false});
+                }
+            } else {
+                BackHandler.exitApp();
+            }
         }
-        this.setState({searchStatus:false, subView:false});
+        this.setState({ subView:false });
     }
 
     _closeControlMenu = () => {
@@ -116,7 +121,6 @@ class Homepage extends React.Component {
     };
 
     _redirect(route){
-        console.log("hainn_redirect--",route);
         this.setState({subView:false});
         getListCategorySmall(route.id_cat).then(list => {
             this.props.dispatch(setCategory2(list));
@@ -128,15 +132,12 @@ class Homepage extends React.Component {
     }
 
     _setView(cate){
-        console.log("hainn-_setView-",cate);
         let title = cate.name_cat?cate.name_cat:cate.title;
         this.props.dispatch(setPageTitle(title));
         let id = cate.id_cat? cate.id_cat : cate.id_ca;
         getContentView(id).then(data => {
-            console.log("hainn--",data);
             if (data.content != null &&data.content != ''){
                 this.setState({searchStatus:false});
-                // let contentfix = data.content.replace(/<p/g,'<p ');
                 this.props.dispatch(setContent(data.content));
             } else {
                 Alert.alert('Thông báo',"Nội dung đang trong quá trình cập nhật..");
@@ -158,15 +159,18 @@ class Homepage extends React.Component {
     }
 
     _setSubView(cate){
-        console.log("hainn-_setSubView-",cate);
         this.setState({subView:true, subViewContent:cate});
         this.props.dispatch(redirect(3));
     }
 
     _onBackMenu(){
-        this.setState({subView:false});
-        this.props.dispatch(redirect(this.props._route - 1));
-        this.props.dispatch(setPageTitle(this.state.pageTitle));
+        if (this.props.pageTitle == "Liên Hệ Đào Tạo"){
+            this.onBackHome();
+        } else {
+            this.setState({subView:false});
+            this.props.dispatch(redirect(this.props._route - 1));
+            this.props.dispatch(setPageTitle(this.state.pageTitle));
+        }
     }
     _onSharing(){
         Share.share({
@@ -211,16 +215,6 @@ class Homepage extends React.Component {
         })
     }
 
-    _renderSearchIcon(){
-        return(
-            <View>
-                <TouchableHighlight onPress={this._onSearchGo} style={styles.headerContainerMenuDisabled}>
-                    <FontAwesome name='search' style={styles.iconSearch} />
-                </TouchableHighlight>
-            </View>
-        );
-    }
-
     _onRating(){
         let link = "https://play.google.com/store/apps/details?id=com.hainn.bvxk";
         Linking.canOpenURL(link).then(supported => {
@@ -251,19 +245,35 @@ class Homepage extends React.Component {
                     <ScrollView style={styles.scrollContainer}>
                     { 
                         this.props.listCategory1.map((category, index) => {
-                            return(
-                                <View style={styles.menuDropDownList} key={index}>
-                                    <TouchableHighlight
-                                        accessibilityLabel={'Tap to open category'}
-                                        style={styles.menuButton}
-                                        onPress={()=>{this._closeControlMenu().then(()=>{
-                                            this._redirect(category);
-                                        })}}
-                                        underlayColor='white'>
-                                        <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>{category.name_cat.toUpperCase()}</Text></View>
-                                    </TouchableHighlight>
-                                </View>
-                            )
+                            if(category.name_cat == "Liên Hệ Đào Tạo"){
+                                return(
+                                    <View style={styles.menuDropDownList} key={index}>
+                                        <TouchableHighlight
+                                            accessibilityLabel={'Tap to open category'}
+                                            style={styles.menuButton}
+                                            onPress={()=>{this._closeControlMenu().then(()=>{
+                                                this._setView(category);
+                                            })}}
+                                            underlayColor='white'>
+                                            <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>{category.name_cat.toUpperCase()}</Text></View>
+                                        </TouchableHighlight>
+                                    </View>
+                                )
+                            } else {
+                                return(
+                                    <View style={styles.menuDropDownList} key={index}>
+                                        <TouchableHighlight
+                                            accessibilityLabel={'Tap to open category'}
+                                            style={styles.menuButton}
+                                            onPress={()=>{this._closeControlMenu().then(()=>{
+                                                this._redirect(category);
+                                            })}}
+                                            underlayColor='white'>
+                                            <View style={styles.categoryTab}><View style={{width:25}}><Text><FontAwesome name='caret-up' color={'#ff1a1a'} style={styles.menuIconButton} /></Text></View><Text style={styles.menuBtnTextTab}>{category.name_cat.toUpperCase()}</Text></View>
+                                        </TouchableHighlight>
+                                    </View>
+                                ) 
+                            }
                         })
                     }
                     <View style={styles.menuDropDownList}>
@@ -311,12 +321,6 @@ class Homepage extends React.Component {
                 <View style={styles.roomContainerClass}>
                     <Image style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }} source={require('./../images/bggreen.jpg')} />
                     <View style={styles.headerContainerClass}>
-                        {/* <ImageBackground
-                            resizeMode={'stretch'} // or cover
-                            style={{flex: 1}} // must be passed from the parent, the number may vary depending upon your screen size
-                            source={require('./../images/background.jpg')}
-                            > */}
-                        {/* <Image source={require('./../images/background.jpg')} style={styles.backgroundImage} /> */}
                         { this.props._route != 3 &&
                             <TouchableHighlight onPress={this._openControlMenu} style={styles.headerContainerMenuDisabled}>
                                 <FontAwesome name='reorder' style={styles.menuHeader} />
@@ -328,23 +332,23 @@ class Homepage extends React.Component {
                             </TouchableHighlight>
                         }
                             <View style={{
-                                justifyContent: 'center',
                                 alignItems: 'center',
-                                flex: 10,
+                                justifyContent: 'center',
+                                flex: 8,
+                                flexDirection: 'column'
                             }}>
-                                <Text style={styles.titleHeader}>{this.state.searchStatus ? this.props.pageTitle :this.props.pageTitle.toUpperCase()}</Text>
+                                <Text style={styles.titleHeader}>{this.props.pageTitle.toUpperCase()}</Text>
                                 { this.props._route == 1 &&
                                     <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                                 }
                             </View>
-                        <View style={styles.iconUserView}>
                             { this.props._route != 1 &&
-                                <TouchableHighlight onPress={this._onSearch} style={styles.headerContainerMenuDisabled}>
-                                    <AntIcon name='search1' style={styles.iconSearch} />
-                                </TouchableHighlight>
+                                <View style={styles.iconUserView}>
+                                    <TouchableHighlight onPress={this._onSearch} style={styles.headerSearch}>
+                                        <AntIcon name='search1' style={styles.iconSearch} />
+                                    </TouchableHighlight>
+                                </View>
                             }
-                        </View>
-                        {/* </ImageBackground> */}
                     </View>
                     {
                         this.props._route == 1 &&
@@ -355,17 +359,31 @@ class Homepage extends React.Component {
                                     <ScrollView style={styles.scrollContainer}>
                                     { 
                                         this.props.listCategory1.map((category, index) => {
-                                            return(
-                                                <View style={styles.menuDropDownListMainView} key={index}>
-                                                    <TouchableHighlight
-                                                        accessibilityLabel={'Tap to open list class LS'}
-                                                        style={styles.menuButton}
-                                                        onPress={()=>{this._redirect(category);}}
-                                                        underlayColor='white'>
-                                                        <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
-                                                    </TouchableHighlight>
-                                                </View>
-                                            )
+                                            if(category.name_cat == "Liên Hệ Đào Tạo"){
+                                                return(
+                                                    <View style={styles.menuDropDownListMainView} key={index}>
+                                                        <TouchableHighlight
+                                                            accessibilityLabel={'Tap to open list class LS'}
+                                                            style={styles.menuButton}
+                                                            onPress={()=>{this._setView(category);}}
+                                                            underlayColor='white'>
+                                                            <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
+                                                        </TouchableHighlight>
+                                                    </View>
+                                                )
+                                            } else {
+                                                return(
+                                                    <View style={styles.menuDropDownListMainView} key={index}>
+                                                        <TouchableHighlight
+                                                            accessibilityLabel={'Tap to open list class LS'}
+                                                            style={styles.menuButton}
+                                                            onPress={()=>{this._redirect(category);}}
+                                                            underlayColor='white'>
+                                                            <View style={styles.category}><View style={{height:50}}><Text></Text></View><Text style={styles.menuBtnText}>{category.name_cat.toUpperCase()}</Text></View>
+                                                        </TouchableHighlight>
+                                                    </View>
+                                                )
+                                            }
                                         })
                                     }
                                     </ScrollView>
@@ -479,9 +497,9 @@ class Homepage extends React.Component {
                     }
                     <View style={styles.footerContainerClass}>
                         <View style={{
-                            justifyContent: 'center',
+                            flex: 1,
                             alignItems: 'center',
-                            flexDirection: 'row'
+                            flexDirection: 'row',
                         }}>
                             <Image style={styles.menuIconAvatarFooter} source={require('./../images/iconfooter.jpg')} />
                             <Text style={this.props._route == 1 ? styles.titleFooter1 :styles.titleFooter}>NHUẬN LỰC: 0986 880 998</Text>
@@ -544,12 +562,14 @@ const styles = StyleSheet.create({
     headerContainerClass: {
         height: '10%',
         flexDirection: 'row',
-        elevation: 5
+        elevation: 5,
+        width: '100%'
     },
     footerContainerClass: {
         height: '8%',
         flexDirection: 'row',
-        elevation: 5
+        elevation: 5,
+        width: "100%"
     },
     menuHeader: {
         flex: 1,
@@ -564,9 +584,7 @@ const styles = StyleSheet.create({
         fontSize: 0.06*deviceWidth,
         color: '#fff',
         textAlign: 'center',
-        textShadowColor:'#015d01',
-        textShadowOffset:{width: 1, height: 1},
-        textShadowRadius:2,
+        textAlignVertical: 'center'
     },
     menuDropDownListLayout:{
         flexDirection: 'column',
@@ -654,11 +672,10 @@ const styles = StyleSheet.create({
     },
     menuAvatarTextSmallTitle:{
         color: '#015d01',
-        textAlign: 'center',
         fontSize: 0.03*deviceWidth,
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
-        textShadowRadius:2
+        textShadowRadius:2,
     },
     menuIconButton:{
         flex: 1,
@@ -676,7 +693,6 @@ const styles = StyleSheet.create({
     menuIconAvatarFooter:{
         width: '18%',
         height: '100%',
-        marginRight: 0.05*deviceWidth,
         marginLeft: 0
     },
     menuIconMain:{
@@ -690,23 +706,12 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     headerContainerMenuDisabled: {
-        flex: 1,
-        flexDirection: 'row',
+        width: '10%',
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingRight: 10,
-        paddingLeft: 10,
-        marginRight: 5
     },
-    headerContainerMenuEnabled: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingRight: 10,
-        paddingLeft: 10,
-        marginRight: 5,
-        backgroundColor: '#f3a84e'
+    headerSearch: {
+        marginRight: 3,
+        flex: 1
     },
     buttonText: {
         alignSelf: 'center',
@@ -720,13 +725,7 @@ const styles = StyleSheet.create({
         marginBottom: 80
     },
     iconUserView: {
-        flex: 2,
-        padding: 0,
-        margin: 0,
-        marginRight: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
+        width: '10%',
     },
     linearGradient: {
         paddingLeft: 5,
@@ -741,18 +740,20 @@ const styles = StyleSheet.create({
     },
     titleHeader: {
         color: '#015d01',
-        textAlign: 'center',
         fontSize: 0.055*deviceWidth,
         fontWeight: '600',
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2,
+        width: '100%',
+        textAlign: 'center'
     },
     titleFooter: {
         color: '#fff',
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 0.05*deviceWidth,
+        flex: 1
     },
     titleFooter1: {
         color: '#ff2d16',
@@ -762,6 +763,7 @@ const styles = StyleSheet.create({
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2,
+        flex: 1
     },
     iconSearch: {
         flex: 1,
