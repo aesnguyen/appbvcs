@@ -103,7 +103,7 @@ class Homepage extends React.Component {
                 BackHandler.exitApp();
             }
         }
-        this.setState({searchStatus:false, subView:false});
+        this.setState({ subView:false });
     }
 
     _closeControlMenu = () => {
@@ -213,16 +213,6 @@ class Homepage extends React.Component {
             this.props.dispatch(setPageTitle('TRẬT ĐẢ DỊCH CỐT TRỤ'));
             this._closeControlMenu();
         })
-    }
-
-    _renderSearchIcon(){
-        return(
-            <View>
-                <TouchableHighlight onPress={this._onSearchGo} style={styles.headerContainerMenuDisabled}>
-                    <FontAwesome name='search' style={styles.iconSearch} />
-                </TouchableHighlight>
-            </View>
-        );
     }
 
     _onRating(){
@@ -343,20 +333,22 @@ class Homepage extends React.Component {
                         }
                             <View style={{
                                 alignItems: 'center',
-                                flex: 10
+                                justifyContent: 'center',
+                                flex: 8,
+                                flexDirection: 'column'
                             }}>
-                                <Text style={styles.titleHeader}>{this.state.searchStatus ? this.props.pageTitle :this.props.pageTitle.toUpperCase()}</Text>
+                                <Text style={styles.titleHeader}>{this.props.pageTitle.toUpperCase()}</Text>
                                 { this.props._route == 1 &&
                                     <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống làm chủ sinh mệnh</Text>
                                 }
                             </View>
-                        <View style={styles.iconUserView}>
                             { this.props._route != 1 &&
-                                <TouchableHighlight onPress={this._onSearch} style={styles.headerContainerMenuDisabled}>
-                                    <AntIcon name='search1' style={styles.iconSearch} />
-                                </TouchableHighlight>
+                                <View style={styles.iconUserView}>
+                                    <TouchableHighlight onPress={this._onSearch} style={styles.headerSearch}>
+                                        <AntIcon name='search1' style={styles.iconSearch} />
+                                    </TouchableHighlight>
+                                </View>
                             }
-                        </View>
                     </View>
                     {
                         this.props._route == 1 &&
@@ -571,7 +563,7 @@ const styles = StyleSheet.create({
         height: '10%',
         flexDirection: 'row',
         elevation: 5,
-        width: "100%"
+        width: '100%'
     },
     footerContainerClass: {
         height: '8%',
@@ -686,7 +678,6 @@ const styles = StyleSheet.create({
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2,
-        marginBottom: 3
     },
     menuIconButton:{
         flex: 1,
@@ -717,23 +708,13 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     headerContainerMenuDisabled: {
-        flex: 1,
-        flexDirection: 'row',
+        width: '10%',
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingRight: 10,
-        paddingLeft: 10,
-        marginRight: 5
+        justifyContent:'center'
     },
-    headerContainerMenuEnabled: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingRight: 10,
-        paddingLeft: 10,
-        marginRight: 5,
-        backgroundColor: '#f3a84e'
+    headerSearch: {
+        marginRight: 3,
+        flex: 1
     },
     buttonText: {
         alignSelf: 'center',
@@ -747,13 +728,7 @@ const styles = StyleSheet.create({
         marginBottom: 80
     },
     iconUserView: {
-        flex: 2,
-        padding: 0,
-        margin: 0,
-        marginRight: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
+        width: '10%',
     },
     linearGradient: {
         paddingLeft: 5,
@@ -773,8 +748,8 @@ const styles = StyleSheet.create({
         textShadowColor:'#fff',
         textShadowOffset:{width: 1, height: 1},
         textShadowRadius:2,
-        flex: 1,
-        lineHeight: 0.1*deviceHeight,
+        width: '100%',
+        textAlign: 'center'
     },
     titleFooter: {
         color: '#fff',
