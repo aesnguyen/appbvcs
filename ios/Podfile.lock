@@ -49,12 +49,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  BVLinearGradient: 0d985ec461359c82bc254f26d11008bdae50d17a
-  React: adbac0757ce35e92fbd447ab98c810209d27d9b0
-  react-native-orientation: d4a97266b06ec8d45d74e626656a730ebbebbb6f
-  RNVectorIcons: ac7bf6bfeafaf3ad34552cdc6eed6fb8c4b7c940
-  yoga: 74cdf036c30820443b25ade59916236b1e95ee93
+  BVLinearGradient: b0b70acf63ee888829b7c2ebbf6b50e227396e55
+  React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
+  react-native-orientation: 3d9a0a8273d18260f7528414093a6a36491382b6
+  RNVectorIcons: 8c52e1e8da1153613fdef44748e865c25556cb9c
+  yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
 PODFILE CHECKSUM: a302b0f9a390d2325cab89b90a8f805273ed7ad6
 
-COCOAPODS: 1.6.0.beta.2
+COCOAPODS: 1.5.3
