@@ -216,7 +216,7 @@ class Homepage extends React.Component {
     }
 
     _onRating(){
-        let link = "https://play.google.com/store/apps/details?id=com.hainn.bvxk";
+        let link = Platform.OS == 'android' ? "https://play.google.com/store/apps/details?id=com.hainn.bvxk" : "itms://itunes.apple.com/us/app/apple-store/id375380948?mt=8";
         Linking.canOpenURL(link).then(supported => {
             if (!supported) {
                 alert("No apps found on store!");
@@ -576,7 +576,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 0.06*deviceWidth,
         color: '#fff',
-        textAlignVertical: 'center'
+        textAlignVertical: 'center',
+        lineHeight:deviceHeight*0.1
     },
     backHeader:{
         flex: 1,
@@ -584,7 +585,8 @@ const styles = StyleSheet.create({
         fontSize: 0.06*deviceWidth,
         color: '#fff',
         textAlign: 'center',
-        textAlignVertical: 'center'
+        textAlignVertical: 'center',
+        lineHeight:deviceHeight*0.1
     },
     menuDropDownListLayout:{
         flexDirection: 'column',
@@ -644,7 +646,8 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlignVertical: 'center',
         textAlign: 'center',
-        fontSize: 0.05*deviceWidth
+        fontSize: 0.05*deviceWidth,
+        lineHeight:50
     },
     menuBtnTextTab:{
         zIndex: 120000,
@@ -708,6 +711,7 @@ const styles = StyleSheet.create({
     headerContainerMenuDisabled: {
         width: '10%',
         alignItems: 'center',
+        justifyContent: 'center'
     },
     headerSearch: {
         marginRight: 3,
@@ -770,7 +774,8 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlignVertical: 'center',
         fontSize: 0.06*deviceWidth,
-        textAlign: 'right'
+        textAlign: 'right',
+        lineHeight:deviceHeight*0.1
     }
 });
 
