@@ -228,13 +228,12 @@ class Homepage extends React.Component {
     
     _renderContentMenu() {
         return (
-            <LinearGradient
-                colors={['#015d01','#379901']}
-                end={{x: 0.25, y: 0.25}} start={{x: 1.0, y: 1.0}}
+            <View
                 style={styles.menuDropDownListLayout}>
                 <StatusBar hidden={true} />
-                
+                <Image style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }} source={require('./../images/bggreen.jpg')} />
                 <View style={styles.menuAvatar}>
+                <Image style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }} source={require('./../images/background.jpg')} />
                     <TouchableHighlight onPress={() => this.onBackHome()}>
                         <Image style={styles.menuIconAvatar} source={require('./../images/icontab.jpg')} />
                     </TouchableHighlight>
@@ -300,7 +299,7 @@ class Homepage extends React.Component {
                     </View>
                     </ScrollView>
                 </View>
-            </LinearGradient>
+            </View>
         )
     }
 
@@ -595,7 +594,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         right: 0,
         zIndex: 10000,
-        backgroundColor: 'rgba(94, 192, 0, 0.5)',
+        // backgroundColor: 'rgba(94, 192, 0, 0.5)',
     },
     menuAvatar:{
         alignItems: 'center',
@@ -671,11 +670,8 @@ const styles = StyleSheet.create({
         textShadowRadius:2,
     },
     menuAvatarTextSmallTitle:{
-        color: '#015d01',
+        color: '#fff',
         fontSize: 0.03*deviceWidth,
-        textShadowColor:'#fff',
-        textShadowOffset:{width: 1, height: 1},
-        textShadowRadius:2,
     },
     menuIconButton:{
         flex: 1,
