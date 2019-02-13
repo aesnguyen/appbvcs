@@ -458,7 +458,6 @@ class Homepage extends React.Component {
                             <WebView
                                 originWhitelist={['*']}
                                 source={{ baseUrl: '', html: this.props.contentView }}
-                                injectedJavaScript={`const img = document.getElementsByTagName('p'); img.setAttribute('text-align: justify;'); `}
                                 scalesPageToFit={true}
                                 onLoadEnd={() => {
                                     this.setState({loading: false});
@@ -525,7 +524,7 @@ const styles = StyleSheet.create({
     },
     emailSubject: {
         color: 'rgba(0,0,0,0.5)',
-        fontSize: 0.05*deviceWidth,
+        fontSize: 0.045*deviceWidth,
         fontWeight: 'bold'
     },
     emailSubject2: {
@@ -643,7 +642,7 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlignVertical: 'center',
         textAlign: 'center',
-        fontSize: 0.05*deviceWidth
+        fontSize: 0.04*deviceWidth
     },
     menuBtnTextTab:{
         zIndex: 120000,
