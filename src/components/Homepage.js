@@ -36,7 +36,8 @@ class Homepage extends React.Component {
             searchResults: [],
             title:'',
             subView:false,
-            subViewContent: {}
+            subViewContent: {},
+            key: 1
         };
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._onBackMenu          = this._onBackMenu.bind(this);
@@ -305,6 +306,7 @@ class Homepage extends React.Component {
 
 
     render() {
+        let WebViewRef;
         return (
             <Drawer
                 ref={(ref) => this._drawer = ref}
@@ -456,14 +458,30 @@ class Homepage extends React.Component {
                         this.props._route == 3 && !this.state.subView &&  !this.state.searchStatus &&
                         <View style={{height: '82%', backgroundColor:'#fffad8'}}>
                             <WebView
+                                key={this.state.key}
                                 originWhitelist={['*']}
                                 source={{ baseUrl: '', html: this.props.contentView }}
                                 scalesPageToFit={true}
+                                startInLoadingState={true}
                                 onLoadEnd={() => {
                                     this.setState({loading: false});
                                 }}
                                 style={{height: '82%', backgroundColor:'#fffad8', marginLeft:10, marginRight:10, flex: 1}}
                             />
+                            <TouchableHighlight
+                                onPress={()=>{ this.setState({ key: this.state.key + 1 });}}
+                                style={{
+                                    position: 'absolute',
+                                    left: '5%',
+                                    bottom: '3%',
+                                    marginBottom: 5,
+                                    borderRadius: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <Text><AntIcon name='upcircle' size={25} color={'#015d01'} style={{ textAlignVertical: 'center', textAlign: 'center' }} /></Text>
+                            </TouchableHighlight>
                         </View>
                     }
                     {
