@@ -36,7 +36,8 @@ class Homepage extends React.Component {
             searchResults: [],
             title:'',
             subView:false,
-            subViewContent: {}
+            subViewContent: {},
+            key:1
         };
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._onBackMenu          = this._onBackMenu.bind(this);
@@ -228,13 +229,13 @@ class Homepage extends React.Component {
     
     _renderContentMenu() {
         return (
-            <LinearGradient
-                colors={['#015d01','#379901']}
-                end={{x: 0.25, y: 0.25}} start={{x: 1.0, y: 1.0}}
+            <View
                 style={styles.menuDropDownListLayout}>
                 <StatusBar hidden={true} />
+                <Image style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }} source={require('./../images/bggreen.jpg')} />
                 
                 <View style={styles.menuAvatar}>
+                <Image style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center' }} source={require('./../images/background.jpg')} />
                     <TouchableHighlight onPress={() => this.onBackHome()}>
                         <Image style={styles.menuIconAvatar} source={require('./../images/icontab.jpg')} />
                     </TouchableHighlight>
@@ -300,7 +301,7 @@ class Homepage extends React.Component {
                     </View>
                     </ScrollView>
                 </View>
-            </LinearGradient>
+            </View>
         )
     }
 
@@ -457,15 +458,31 @@ class Homepage extends React.Component {
                         this.props._route == 3 && !this.state.subView &&  !this.state.searchStatus &&
                         <View style={{height: '82%', backgroundColor:'#fffad8'}}>
                             <WebView
+                                key={this.state.key}
                                 originWhitelist={['*']}
                                 source={{ baseUrl: '', html: this.props.contentView }}
                                 injectedJavaScript={`const img = document.getElementsByTagName('p'); img.setAttribute('text-align: justify;'); `}
                                 scalesPageToFit={true}
+                                startInLoadingState={true}
                                 onLoadEnd={() => {
                                     this.setState({loading: false});
                                 }}
                                 style={{height: '82%', backgroundColor:'#fffad8', marginLeft:10, marginRight:10, flex: 1}}
                             />
+                            <TouchableHighlight
+                                onPress={()=>{ this.setState({ key: this.state.key + 1 });}}
+                                style={{
+                                    position: 'absolute',
+                                    right: '5%',
+                                    bottom: '3%',
+                                    marginBottom: 5,
+                                    borderRadius: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <Text><AntIcon name='upcircle' size={25} color={'#015d01'} style={{ textAlignVertical: 'center', textAlign: 'center' }} /></Text>
+                            </TouchableHighlight>
                         </View>
                     }
                     {
@@ -646,7 +663,7 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlignVertical: 'center',
         textAlign: 'center',
-        fontSize: 0.05*deviceWidth,
+        fontSize: 0.04*deviceWidth,
         lineHeight:50
     },
     menuBtnTextTab:{
@@ -674,11 +691,11 @@ const styles = StyleSheet.create({
         textShadowRadius:2,
     },
     menuAvatarTextSmallTitle:{
-        color: '#015d01',
+        color: '#fff',
         fontSize: 0.03*deviceWidth,
-        textShadowColor:'#fff',
-        textShadowOffset:{width: 1, height: 1},
-        textShadowRadius:2,
+        // textShadowColor:'#fff',
+        // textShadowOffset:{width: 1, height: 1},
+        // textShadowRadius:2,
     },
     menuIconButton:{
         flex: 1,
