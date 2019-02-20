@@ -217,7 +217,7 @@ class Homepage extends React.Component {
     }
 
     _onRating(){
-        let link = "https://play.google.com/store/apps/details?id=com.hainn.bvxk";
+        let link = "https://play.google.com/store/apps/details?id=vn.benhvienxuongkhop.app";
         Linking.canOpenURL(link).then(supported => {
             if (!supported) {
                 alert("No apps found on store!");
@@ -472,7 +472,7 @@ class Homepage extends React.Component {
                                 onPress={()=>{ this.setState({ key: this.state.key + 1 });}}
                                 style={{
                                     position: 'absolute',
-                                    left: '5%',
+                                    right: '5%',
                                     bottom: '3%',
                                     marginBottom: 5,
                                     borderRadius: 10,
