@@ -175,8 +175,8 @@ class Homepage extends React.Component {
     }
     _onSharing(){
         Share.share({
-            message: 'Trật đả dịch cốt trụ - Làm chủ cột sống làm chủ sinh mệnh!',
-            url: 'https://play.google.com/store/apps/details?id=com.hainn.bvcs',
+            message: 'Trật đả dịch cốt trụ - Làm chủ cột sống là làm chủ sinh mệnh!',
+            url: 'https://itunes.apple.com/us/app/apple-store/id1453792215?mt=8',
             title: 'Ứng dụng tác động cột sống - Trật đả dịch cốt trụ'
           }, {
             // Android only:
@@ -217,7 +217,7 @@ class Homepage extends React.Component {
     }
 
     _onRating(){
-        let link = Platform.OS == 'android' ? "https://play.google.com/store/apps/details?id=com.hainn.bvxk" : "itms://itunes.apple.com/us/app/apple-store/id375380948?mt=8";
+        let link = Platform.OS == 'android' ? "https://play.google.com/store/apps/details?id=com.hainn.bvxk" : "https://itunes.apple.com/us/app/apple-store/id1453792215?mt=8";
         Linking.canOpenURL(link).then(supported => {
             if (!supported) {
                 alert("No apps found on store!");
@@ -240,7 +240,7 @@ class Homepage extends React.Component {
                         <Image style={styles.menuIconAvatar} source={require('./../images/icontab.jpg')} />
                     </TouchableHighlight>
                     <Text style={styles.menuAvatarText}>TRẬT ĐẢ DỊCH CỐT TRỤ</Text>
-                    <Text style={styles.menuAvatarTextSmall}>Làm chủ cột sống làm chủ sinh mệnh</Text>
+                    <Text style={styles.menuAvatarTextSmall}>Làm chủ cột sống là làm chủ sinh mệnh</Text>
                 </View>
                 <View style={{height:'62%',backgroundColor: '#fffad8',}}>
                     <ScrollView style={styles.scrollContainer}>
@@ -340,7 +340,7 @@ class Homepage extends React.Component {
                             }}>
                                 <Text style={styles.titleHeader}>{this.props.pageTitle.toUpperCase()}</Text>
                                 { this.props._route == 1 &&
-                                    <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống làm chủ sinh mệnh</Text>
+                                    <Text style={styles.menuAvatarTextSmallTitle}>Làm chủ cột sống là làm chủ sinh mệnh</Text>
                                 }
                             </View>
                             { this.props._route != 1 &&

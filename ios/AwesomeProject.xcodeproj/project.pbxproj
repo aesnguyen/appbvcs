@@ -40,7 +40,6 @@
 		2D02E4C71E0B4AEC006451C7 /* libRCTText-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E941DF850E9000B6D8A /* libRCTText-tvOS.a */; };
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
-		2D9E384A5ADE42EEA346A243 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9200081EC3AA4ACF9A966F3E /* libBVLinearGradient.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* AwesomeProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* AwesomeProjectTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		31853F8B6A264309AB94046A /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9239F8354D74F8FA41D63AF /* EvilIcons.ttf */; };
@@ -51,13 +50,12 @@
 		66379BB150EB42879029BCC6 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA500390160644D6B8F63790 /* FontAwesome.ttf */; };
 		76E55EA097C24C07B019367C /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F624CD466CE447B297BC214B /* MaterialIcons.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		84308DB022042A140073A965 /* libreact-native-orientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84308DAF22042A140073A965 /* libreact-native-orientation.a */; };
 		84604DF77DEA42CB91A24309 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 62E3F9A825D548BB92783199 /* SimpleLineIcons.ttf */; };
+		84914A9A221E780B00703D06 /* libreact-native-orientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84914A99221E780B00703D06 /* libreact-native-orientation.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		CC06C6956E0E4D4BB5FD4F61 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2059E638126F4B5387D5C85E /* Feather.ttf */; };
 		E3B8881AF6DB468597EEBF33 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8A343C098214529B3EE25B3 /* Octicons.ttf */; };
 		EF59493143E64A0A95372221 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 230A443F55E744D88519B5C3 /* libRNVectorIcons-tvOS.a */; };
-		FB4136247F3C42949C80CD90 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 573DE450936C42BF857836B2 /* libRNVectorIcons.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -412,6 +410,9 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		84308DAF22042A140073A965 /* libreact-native-orientation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-orientation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8470A5029B2F8920C1617881 /* Pods-AwesomeProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomeProject.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AwesomeProject/Pods-AwesomeProject.debug.xcconfig"; sourceTree = "<group>"; };
+		84914A96221E77AB00703D06 /* libyoga.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libyoga.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		84914A99221E780B00703D06 /* libreact-native-orientation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-orientation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		84914A9C221E7AA600703D06 /* libyoga.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libyoga.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C36FE08F85D48C1BCF14D7B /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		9200081EC3AA4ACF9A966F3E /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		968471F0EE1D41B4A6FF58AA /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -440,7 +441,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84308DB022042A140073A965 /* libreact-native-orientation.a in Frameworks */,
+				84914A9A221E780B00703D06 /* libreact-native-orientation.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -453,8 +454,6 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				2D9E384A5ADE42EEA346A243 /* libBVLinearGradient.a in Frameworks */,
-				FB4136247F3C42949C80CD90 /* libRNVectorIcons.a in Frameworks */,
 				3487D42D4099C6245087982B /* libPods-AwesomeProject.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -605,6 +604,9 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84914A9C221E7AA600703D06 /* libyoga.a */,
+				84914A99221E780B00703D06 /* libreact-native-orientation.a */,
+				84914A96221E77AB00703D06 /* libyoga.a */,
 				84308DAF22042A140073A965 /* libreact-native-orientation.a */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				0A4D7CAEE95CDF04AA968783 /* libPods-AwesomeProject.a */,
@@ -856,6 +858,9 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = K97QRHH79X;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1539,6 +1544,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon.debug;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = K97QRHH79X;
+				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
@@ -1547,14 +1554,16 @@
 					"$(SRCROOT)..\node_modules\neact-native-search-barios",
 				);
 				INFOPLIST_FILE = AwesomeProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = vn.reactjs.native.example.AwesomeProject;
+				PRODUCT_BUNDLE_IDENTIFIER = vn.benhvienxuongkhop.app1;
 				PRODUCT_NAME = AwesomeProject;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1565,6 +1574,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon.debug;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K97QRHH79X;
+				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-linear-gradientBVLinearGradient",
@@ -1573,14 +1584,16 @@
 					"$(SRCROOT)..\node_modules\neact-native-search-barios",
 				);
 				INFOPLIST_FILE = AwesomeProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = vn.reactjs.native.example.AwesomeProject;
+				PRODUCT_BUNDLE_IDENTIFIER = vn.benhvienxuongkhop.app1;
 				PRODUCT_NAME = AwesomeProject;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
